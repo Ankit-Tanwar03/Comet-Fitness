@@ -56,7 +56,7 @@ function About() {
               </button>
             </NavLink>
           </div>
-          <div className="w-full md:w-1/3 hidden md:block">
+          <div className=" md:w-1/3 hidden md:block">
             <img src={CoupleImage} alt="" className="w-full" />
           </div>
         </div>
