@@ -22,46 +22,50 @@ import image20 from "../../assets/home/gallery/image20.jpg";
 
 function Gallery() {
   const images = [
-    `${image1}`,
-    `${image2}`,
-    `${image3}`,
-    `${image4}`,
-    `${image5}`,
-    `${image6}`,
-    `${image7}`,
-    `${image8}`,
-    `${image9}`,
-    `${image10}`,
-    `${image11}`,
-    `${image12}`,
-    `${image13}`,
-    `${image14}`,
-    `${image15}`,
-    `${image16}`,
-    `${image17}`,
-    `${image18}`,
-    `${image19}`,
-    `${image20}`,
+    image1,
+    image2,
+    image3,
+    image4,
+    image5,
+    image6,
+    image7,
+    image8,
+    image9,
+    image10,
+    image11,
+    image12,
+    image13,
+    image14,
+    image15,
+    image16,
+    image17,
+    image18,
+    image19,
+    image20,
   ];
 
   return (
-    <div className="">
-      <div>
-        <h3>Comet Fitness Gallery</h3>
-        <h1>Look at your den</h1>
-        <p>
+    <div className="py-12 px-4 bg-gray-900">
+      <div className="text-center mb-12">
+        <h3 className="text-cyan-600 font-semibold text-lg mb-2">
+          Comet Fitness Gallery
+        </h3>
+        <h1 className="text-4xl font-bold text-white mb-4">Look at your den</h1>
+        <p className="text-gray-300 max-w-2xl mx-auto">
           Our Gallery features how you would feel and motivate yourself to keep
           showing up for a better physique
         </p>
       </div>
-      <div className="bg-gray-900 grid grid-cols-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {images.map((image, index) => (
-          <img
-            key={index}
-            src={image}
-            alt={`Gym Photo `}
-            className=" w-80 object-cover rounded-lg gap-4"
-          />
+          <div key={index} className="relative overflow-hidden rounded-lg">
+            <img
+              src={image}
+              alt={`Gym Photo ${index + 1}`}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-slate-950 opacity-0 hover:opacity-30 transition-opacity duration-300"></div>
+          </div>
         ))}
       </div>
     </div>

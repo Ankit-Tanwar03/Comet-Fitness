@@ -3,10 +3,23 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
-    scrollbar-color: #8e8e8e #fff;
-    scrollbar-width: thin;
+
+::-webkit-scrollbar {
+    width:5px;
 }
+
+::-webkit-scrollbar-track {
+    background: black; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(31, 3, 238, 0.664);
+    border-radius: 10px; 
+    border: none;
+}
+
+
+
 
 body{
     font-family: "Poppins";

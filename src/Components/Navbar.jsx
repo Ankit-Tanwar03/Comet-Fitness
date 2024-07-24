@@ -1,42 +1,67 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../assets/logo/Logo.png";
+import authService from "../Appwrite/auth.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
   faX,
-  faUser,
   faCircleInfo,
   faMessage,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
-function Navbar() {
+function Navbar({ toggleSidebar }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
-  const toggleMenu = () => {
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    const checkAuthStatus = async () => {
+      const loggedIn = await authService.isLoggedIn();
+      setIsAuthenticated(loggedIn);
+    };
+
+    checkAuthStatus();
+
+    const handleAuthChange = (status) => {
+      setIsAuthenticated(status);
+    };
+
+    authService.onAuthChange(handleAuthChange);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      authService.offAuthChange(handleAuthChange);
+    };
+  }, []);
+
+  const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 0);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      setIsAuthenticated(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50  px-6 lg:px-24 transition-colors duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 px-0 sm:px-6 lg:px-12 transition-colors duration-300 ${
         isScrolled ? "bg-black" : "bg-white bg-opacity-0"
       }`}
     >
@@ -49,12 +74,12 @@ function Navbar() {
         <ul
           className={`${
             isMenuOpen
-              ? "h-screen w-screen flex flex-col items-center justify-center space-y-4"
-              : "flex flex-row items-center space-x-1 md:space-x-4 xl:space-x-6 transition-all duration-300 ease-in-out"
+              ? "h-screen w-screen flex flex-col items-center justify-center space-y-4 bg-black"
+              : "flex flex-row items-center lg:space-x-6 xl:space-x-6 transition-all duration-300 ease-in-out"
           } `}
         >
           <li
-            onClick={toggleMenu}
+            onClick={handleMenuToggle}
             className={`text-white font-semibold text-lg hover:text-rose-800 transition duration-300 ease-in-out cursor-pointer ${
               isMenuOpen ? "lg:block" : "lg:hidden"
             }`}
@@ -62,7 +87,7 @@ function Navbar() {
             {isMenuOpen ? (
               <FontAwesomeIcon
                 icon={faX}
-                className="absolute top-2 right-2 lg:top-10 lg:right-10"
+                className="absolute top-6 right-4 lg:top-10 lg:right-10"
               />
             ) : (
               <FontAwesomeIcon icon={faBars} />
@@ -204,64 +229,105 @@ function Navbar() {
               Contact
             </NavLink>
           </li>
+
           <ul className="flex flex-row items-center space-x-2 lg:hidden">
-            <li>
-              <button
-                className={`px-2 py-1 text-black border-2 text-md font-semibold hover:border-red hover:scale-105 border-white bg-gradient-to-bl from-slate-800 to-slate-50 bg-opacity-40 rounded-full shadow-white/50 shadow-md hover:transition-all ease-in-out duration-200  ${
-                  isMenuOpen ? "block mb-4" : "hidden"
-                }`}
-              >
-                <FontAwesomeIcon icon={faUser} />
-              </button>
-            </li>
-            <li>
+            <li onClick={closeMenu}>
               <button
                 className={`px-2 py-1 text-black border-2 text-md font-semibold hover:border-red hover:scale-105 border-white bg-gradient-to-bl from-slate-800 to-slate-50 bg-opacity-40 rounded-full shadow-white/50 shadow-md hover:transition-all ease-in-out duration-200    ${
                   isMenuOpen ? "block mb-4" : "hidden"
                 }`}
+                onClick={toggleSidebar}
               >
                 <FontAwesomeIcon icon={faCircleInfo} />
               </button>
             </li>
-            <li>
-              <button
-                className={`px-2 py-1 text-black border-2 text-md font-semibold hover:border-red hover:scale-105 border-white bg-gradient-to-bl from-slate-800 to-slate-50 bg-opacity-40 rounded-full shadow-white/50 shadow-md hover:transition-all ease-in-out duration-200   ${
-                  isMenuOpen ? "block mb-4" : "hidden"
-                }`}
-              >
-                <FontAwesomeIcon icon={faMessage} />
-              </button>
+            <li onClick={closeMenu}>
+              <NavLink to="/contact">
+                <button
+                  className={`px-2 py-1 text-black border-2 text-md font-semibold hover:border-red hover:scale-105 border-white bg-gradient-to-bl from-slate-800 to-slate-50 bg-opacity-40 rounded-full shadow-white/50 shadow-md hover:transition-all ease-in-out duration-200   ${
+                    isMenuOpen ? "block mb-4" : "hidden"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faMessage} />
+                </button>
+              </NavLink>
             </li>
+            {isAuthenticated ? (
+              <li
+                className={`${isMenuOpen ? "block mb-4" : "hidden"}`}
+                onClick={closeMenu}
+              >
+                <button
+                  onClick={handleLogout}
+                  className="text-cyan-500 font-semibold hover:text-orange-400"
+                >
+                  Logout
+                </button>
+              </li>
+            ) : (
+              <li
+                className={`${isMenuOpen ? "block mb-4" : "hidden"}`}
+                onClick={closeMenu}
+              >
+                <NavLink
+                  to="/signin"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-orange-400 font-semibold"
+                      : "text-cyan-500 font-semibold hover:text-orange-400"
+                  }
+                >
+                  Sign In
+                </NavLink>
+              </li>
+            )}
           </ul>
         </ul>
         <ul className="flex-row items-center space-x-2 hidden lg:flex">
           <li>
             <button
-              className={`items-center px-2 py-1 text-black border-2 text-md font-semibold hover:border-red hover:scale-105 border-white bg-gradient-to-bl from-slate-800 to-slate-50 bg-opacity-40 rounded-full shadow-white/50 shadow-md hover:transition-all ease-in-out duration-200  ${
-                isMenuOpen ? "hidden" : "block "
-              }`}
-            >
-              <FontAwesomeIcon icon={faUser} />
-            </button>
-          </li>
-          <li>
-            <button
               className={`px-2 py-1 text-black border-2 text-md font-semibold hover:border-red hover:scale-105 border-white bg-gradient-to-bl from-slate-800 to-slate-50 bg-opacity-40 rounded-full shadow-white/50 shadow-md hover:transition-all ease-in-out duration-200    ${
                 isMenuOpen ? "hidden" : "block"
               }`}
+              onClick={toggleSidebar}
             >
               <FontAwesomeIcon icon={faCircleInfo} />
             </button>
           </li>
           <li>
-            <button
-              className={`px-2 py-1 text-black border-2 text-md font-semibold hover:border-red hover:scale-105 border-white bg-gradient-to-bl from-slate-800 to-slate-50 bg-opacity-40 rounded-full shadow-white/50 shadow-md hover:transition-all ease-in-out duration-200  ${
-                isMenuOpen ? "hidden" : "block"
-              }`}
-            >
-              <FontAwesomeIcon icon={faMessage} />
-            </button>
+            <NavLink to="/contact">
+              <button
+                className={`px-2 py-1 text-black border-2 text-md font-semibold hover:border-red hover:scale-105 border-white bg-gradient-to-bl from-slate-800 to-slate-50 bg-opacity-40 rounded-full shadow-white/50 shadow-md hover:transition-all ease-in-out duration-200  ${
+                  isMenuOpen ? "hidden" : "block"
+                }`}
+              >
+                <FontAwesomeIcon icon={faMessage} />
+              </button>
+            </NavLink>
           </li>
+          {isAuthenticated ? (
+            <li className={`${isMenuOpen ? "hidden" : "block"}`}>
+              <button
+                onClick={handleLogout}
+                className="text-cyan-500 font-semibold hover:text-orange-400"
+              >
+                Logout
+              </button>
+            </li>
+          ) : (
+            <li className={`${isMenuOpen ? "hidden" : "block"}`}>
+              <NavLink
+                to="/signin"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-orange-400 font-semibold"
+                    : "text-cyan-500 font-semibold hover:text-orange-400"
+                }
+              >
+                Sign In
+              </NavLink>
+            </li>
+          )}
         </ul>
       </div>
     </div>

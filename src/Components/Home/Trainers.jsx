@@ -6,15 +6,19 @@ function Trainers() {
   return (
     <>
       <div
-        className="bg-cover bg-right-top bg-no-repeat min-h-screen p-12"
+        className="bg-cover bg-right-top bg-no-repeat min-h-screen p-4 sm:p-8 md:p-12"
         style={{ backgroundImage: `url(${BGImage})` }}
       >
-        <div className="text-center pb-12">
-          <h3 className="font-bold text-cyan-600 pb-6">{trainers.subtitle}</h3>
-          <h1 className="text-4xl font-semibold pb-8">{trainers.title}</h1>
-          <p className="text-lg">{trainers.description}</p>
+        <div className="text-center pb-8 md:pb-12">
+          <h3 className="font-bold text-cyan-600 pb-4 md:pb-6">
+            {trainers.subtitle}
+          </h3>
+          <h1 className="text-2xl md:text-4xl font-semibold pb-4 md:pb-8">
+            {trainers.title}
+          </h1>
+          <p className="text-base md:text-lg">{trainers.description}</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-4 gap-4">
           {trainers.cards.map((card, index) => (
             <div
               key={index}
@@ -23,11 +27,15 @@ function Trainers() {
               <img
                 src={card.image}
                 alt={card.name}
-                className="w-72 object-cover object-center transition-all hover:scale-105 ease duration-300 hover:grayscale-0"
+                className="w-full  object-cover object-center transition-all hover:scale-105 ease duration-300 hover:grayscale-0"
               />
-              <div className="p-6 flex flex-col items-center justify-center">
-                <p className="text-2xl font-semibold mb-2">{card.name}</p>
-                <p className="text-lg text-black mb-4">{card.designation}</p>
+              <div className="p-4 md:p-6 flex flex-col items-center justify-center">
+                <p className="text-lg md:text-2xl font-semibold mb-2">
+                  {card.name}
+                </p>
+                <p className="text-sm md:text-lg text-black mb-4">
+                  {card.designation}
+                </p>
                 <div className="flex space-x-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -100,15 +108,15 @@ function Trainers() {
         </div>
         <div>
           <h3 className="font-bold text-cyan-600 pb-2 text-center mt-16">
-            Our Partners
+            {trainers.partnersTitle}
           </h3>
-          <div className="flex justify-around items-center">
+          <div className="flex justify-around items-center flex-wrap">
             {trainers.logos.map((logo, index) => (
-              <div key={index}>
+              <div key={index} className="m-4">
                 <img
                   src={logo.image}
                   alt="logo-image"
-                  className="scale-[.6] invert"
+                  className="w-24 invert"
                 />
               </div>
             ))}

@@ -4,13 +4,15 @@ import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Home from "./Pages/Home.jsx";
-import About from "./Pages/About.jsx";
-import Gallery from "./Pages/Gallery.jsx";
+import AboutPage from "./Pages/AboutPage.jsx";
+import GalleryPage from "./Pages/GalleryPage.jsx";
 import Schedule from "./Pages/Schedule.jsx";
 import Blog from "./Pages/Blog.jsx";
-import Pricing from "./Pages/Pricing.jsx";
-import Classes from "./Pages/Classes.jsx";
+import PricingPage from "./Pages/PricingPage.jsx";
+import ClassesPage from "./Pages/ClassesPage.jsx";
 import Contact from "./Pages/Contact.jsx";
+import SignUp from "./Pages/Signup.jsx";
+import SignIn from "./Pages/Signin.jsx";
 
 const router = createBrowserRouter([
   {
@@ -23,11 +25,11 @@ const router = createBrowserRouter([
       },
       {
         path: "about",
-        element: <About />,
+        element: <AboutPage />,
       },
       {
         path: "gallery",
-        element: <Gallery />,
+        element: <GalleryPage />,
       },
       {
         path: "schedule",
@@ -39,15 +41,23 @@ const router = createBrowserRouter([
       },
       {
         path: "pricing",
-        element: <Pricing />,
+        element: <PricingPage />,
       },
       {
         path: "classes",
-        element: <Classes />,
+        element: <ClassesPage />,
       },
       {
         path: "contact",
         element: <Contact />,
+      },
+      {
+        path: "signup",
+        element: <SignUp />,
+      },
+      {
+        path: "signin",
+        element: <SignIn />,
       },
     ],
   },
